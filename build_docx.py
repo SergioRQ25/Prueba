@@ -212,12 +212,19 @@ def parse_blocks(text):
 doc = Document()
 
 sec = doc.sections[0]
-sec.page_width = Cm(21.0)
-sec.page_height = Cm(29.7)
-sec.top_margin = Cm(2.5)
-sec.bottom_margin = Cm(2.5)
-sec.left_margin = Cm(2.5)
-sec.right_margin = Cm(2.5)
+sec.page_width = Cm(15.24)
+sec.page_height = Cm(22.90)
+sec.top_margin = Cm(1.5)
+sec.bottom_margin = Cm(1.0)
+sec.left_margin = Cm(1.9)    # inside (binding)
+sec.right_margin = Cm(1.6)   # outside
+sec.gutter = Cm(0)
+sec.footer_distance = Cm(0.7)
+
+# Mirrored (facing-page) margins: left/right swap on even pages.
+sectPr = sec._sectPr
+pgMar = sectPr.find(qn("w:pgMar"))
+pgMar.set(qn("w:mirrorMargins"), "1")
 
 # Page background color lives in document.xml as the first child of w:document,
 # before w:body (Word's Design > Page Color writes it there).
@@ -328,7 +335,7 @@ def add_image(fig, caption):
     path = f"{IMG_DIR}/{fig}.jpg"
     with PILImage.open(path) as im:
         w, h = im.size
-    width = Inches(6.25) if w >= h else Inches(3.7)
+    width = Inches(4.6) if w >= h else Inches(2.7)
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p.paragraph_format.space_before = Pt(12)
@@ -338,14 +345,14 @@ def add_image(fig, caption):
     cp = doc.add_paragraph()
     cp.alignment = WD_ALIGN_PARAGRAPH.CENTER
     cpf = cp.paragraph_format
-    cpf.left_indent = Cm(1.4)
-    cpf.right_indent = Cm(1.4)
+    cpf.left_indent = Cm(0.7)
+    cpf.right_indent = Cm(0.7)
     cpf.space_after = Pt(12)
     cpf.line_spacing = 1.15
     cr = cp.add_run(caption)
-    set_run(cr, size=9.5, italic=True, color=MUTED)
+    set_run(cr, size=10.5, italic=True, color=MUTED)
 
-def add_rule(centered=True, left=2.2, right=2.2, sz=6, space=8):
+def add_rule(centered=True, left=1.6, right=1.6, sz=6, space=8):
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER if centered else WD_ALIGN_PARAGRAPH.LEFT
     pf = p.paragraph_format
