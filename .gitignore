@@ -1,0 +1,5 @@
+# Python virtual environment
+.venv/
+
+# Generated illustration sources (already embedded in the .docx)
+images/
